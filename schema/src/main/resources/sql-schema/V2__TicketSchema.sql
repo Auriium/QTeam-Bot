@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS dong (
+  id INT NOT NULL,
+  cum_id INT NOT NULL,
+  title VARCHAR(400) NOT NULL,
+  some_tubbs_variable VARCHAR(200) NOT NULL,
+
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS bomb (
+  id INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS cumNugget (
+  id INT NOT NULL
+)

@@ -1,0 +1,3 @@
+# Project exclude paths
+/bot/target/
+/schema/target/

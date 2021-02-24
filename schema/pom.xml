@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>qteam_bot</artifactId>
+        <groupId>me.aurium</groupId>
+        <version>0.1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <version>0.2.0</version>
+
+    <artifactId>schema</artifactId>
+
+    <properties>
+        <maven.compiler.source>${compiler.version}</maven.compiler.source>
+        <maven.compiler.target>${compiler.version}</maven.compiler.target>
+
+        <flyway.version>7.5.0</flyway.version>
+
+        <db.name>qteam-bot</db.name>
+        <db.url>jdbc:h2:~/${db.name}</db.url>
+        <db.username>sa</db.username>
+        <db.port>50000</db.port>
+
+
+
+
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
+
+                <!-- Note that we're executing the Flyway plugin in the "generate-sources" phase -->
+                <executions>
+                    <execution>
+                        <id>clean up the mess</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>regenerate sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+
+                </executions>
+
+                <configuration>
+                    <url>${db.url}</url>
+                    <user>${db.username}</user>
+
+                    <ignoreFutureMigrations>false</ignoreFutureMigrations>
+                    <validateMigrationNaming>true</validateMigrationNaming>
+                    <group>true</group>
+
+                    <locations>
+                        <location>filesystem:src/main/resources/sql-schema</location>
+                    </locations>
+                </configuration>
+            </plugin>
+            <plugin>
+
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
+
+                <!-- The jOOQ code generation plugin is also executed in the generate-sources phase, prior to compilation -->
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>${h2.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <jdbc>
+                        <url>${db.url}</url>
+                        <user>${db.username}</user>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.h2.H2Database</name>
+                            <includes>.*</includes>
+
+                            <includeTables>true</includeTables>
+
+                            <inputSchema>PUBLIC</inputSchema>
+
+                            <!-- IT TOOK FUCKING 3 HOURS TO FIGURE OUT THIS WAS CASE SENSITIVE. BITCH ASS SHITTY FUCK NIPPLE H2 FUCK YOU -->
+
+                        </database>
+                        <target>
+
+
+                            <packageName>me.aurium.qteambot.sources</packageName>
+                            <directory>target/generated-sources/</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.edugility</groupId>
+            <artifactId>h2-maven-plugin</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

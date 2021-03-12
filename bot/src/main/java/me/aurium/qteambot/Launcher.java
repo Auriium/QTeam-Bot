@@ -38,6 +38,9 @@ public class Launcher {
         beetle.getLogger().debug("Launcher | Initializing JavaCord");
 
         DiscordApi discordApi = new DiscordApiBuilder().setToken(config.token()).login().join(); //ew (listed as the correct way to get an API instance)
+        //i literally do not care about blocking here. If we were preparing this bot for a much bigger use (which is why everything is
+        //turned into "modules" ) i'd be passing this around as a future, but i'm lazy and doubt this bot will ever be used for much more than what it is currently.
+
 
         beetle.getLogger().debug("Launcher | Initializing DataCore Functionality!");
 

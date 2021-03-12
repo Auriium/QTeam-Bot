@@ -1,32 +1,31 @@
 package me.aurium.qteambot;
 
-import me.aurium.beetle.core.Beetle;
-import me.aurium.beetle.core.config.FileSourceConfigProducer;
-import me.aurium.beetle.core.datacore.CoreSource;
-import me.aurium.beetle.core.datacore.DataCore;
-import me.aurium.beetle.core.datacore.FileCoreSourceFactory;
-import me.aurium.beetle.core.datacore.FileSourceConfig;
+import me.aurium.beetle.api.Beetle;
+import me.aurium.beetle.api.datacore.DataCore;
+import org.javacord.api.DiscordApi;
 
+/**
+ * Initializes a bot with it's correct managers, handlers, commands, etc.
+ *
+ * The provided final bot should not need to do any of this.
+ */
 public class QTeamBotLauncher {
 
     private final Beetle beetle;
+    private final DataCore operatingDataCore;
+    private final DiscordApi api;
 
-    public QTeamBotLauncher(Beetle beetle) {
+    QTeamBotLauncher(Beetle beetle, DataCore dataCore, DiscordApi discordApi) {
         this.beetle = beetle;
+        this.operatingDataCore = dataCore;
+        this.api = discordApi;
     }
 
     public QTeamBot launch() {
-        beetle.getLogger().error("QTeamBot - Launcher Online! Beginning launch cycle!");
 
-        FileSourceConfig config = beetle.getFileProvider().getDataHolder(new FileSourceConfigProducer("password","username"),"database.db");
 
-        CoreSource source = new FileCoreSourceFactory.H2(config).getCoreSource();
 
-        DataCore dataCore = beetle.getDatacoreFactory().produceDatacore(source);
-
-        return new QTeamBot(beetle,dataCore);
-
+        return null;
     }
-
 
 }

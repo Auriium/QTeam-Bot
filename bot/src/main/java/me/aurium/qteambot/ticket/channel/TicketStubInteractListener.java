@@ -1,4 +1,4 @@
-package me.aurium.qteambot.ticket;
+package me.aurium.qteambot.ticket.channel;
 
 import org.javacord.api.event.message.reaction.ReactionAddEvent;
 import org.javacord.api.listener.message.reaction.ReactionAddListener;
@@ -8,10 +8,17 @@ import org.javacord.api.listener.message.reaction.ReactionAddListener;
  */
 public class TicketStubInteractListener implements ReactionAddListener {
 
+    private ChannelDataHandler dataHandler;
+
     @Override
     public void onReactionAdd(ReactionAddEvent reactionAddEvent) {
         if (reactionAddEvent.getMessageId() == 13307) { //mockup
 
+
+
+            reactionAddEvent.getUser().ifPresent(user -> {
+
+            });
         }
     }
 }

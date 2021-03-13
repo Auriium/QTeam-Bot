@@ -8,6 +8,10 @@ public interface LauncherConfig {
     String token();
 
     //STORAGE
-    WebSourceConfig webSourceConfig();
+    String databaseName();
+    String databaseUser();
+    String databaseHost();
+    String databasePassword();
+    int databasePort();
 
 }

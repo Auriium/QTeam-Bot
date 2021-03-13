@@ -1,16 +1,12 @@
-CREATE TABLE IF NOT EXISTS dong (
-  id INT NOT NULL,
-  cum_id INT NOT NULL,
-  title VARCHAR(400) NOT NULL,
-  some_tubbs_variable VARCHAR(200) NOT NULL,
+CREATE TABLE IF NOT EXISTS tickets (
+  ticket_id INT NOT NULL,
 
-  PRIMARY KEY (id)
+
+  PRIMARY KEY (ticket_id)
 );
 
-CREATE TABLE IF NOT EXISTS bomb (
-  id INT NOT NULL
-);
+CREATE TABLE IF NOT EXISTS ticket_channels (
+  ticket_id INT NOT NULL
 
-CREATE TABLE IF NOT EXISTS cumNugget (
-  id INT NOT NULL
-)
+
+);

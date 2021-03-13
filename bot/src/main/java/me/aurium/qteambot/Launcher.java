@@ -4,6 +4,8 @@ import me.aurium.beetle.api.Beetle;
 import me.aurium.beetle.api.datacore.CoreSource;
 import me.aurium.beetle.api.datacore.DataCore;
 import me.aurium.beetle.defaults.GenericBeetleFactory;
+import me.aurium.beetle.defaults.datacore.HikariCoreSourceFactory;
+import me.aurium.beetle.defaults.datacore.WebSourceConfig;
 import me.aurium.beetle.defaults.file.database.DBExtensionConstants;
 import me.aurium.beetle.defaults.file.database.LocalSourceKey;
 import me.aurium.beetle.defaults.file.database.LocalSourceOptions;
@@ -44,12 +46,17 @@ public class Launcher {
 
         beetle.getLogger().debug("Launcher | Initializing DataCore Functionality!");
 
-        beetle.getFileProvider().registerNewData(
-                new LocalSourceKey("database"),
-                new LocalSourceOptions("sa","",DBExtensionConstants.H2));
+        WebSourceConfig webConf = new WebSourceConfig.Builder()
+                .setDatabaseName(config.databaseName())
+                .setDialect("mariadb")
+                .setDatabaseUser(config.databaseUser())
+                .setHostLocation(config.databaseHost())
+                .setPassword(config.databasePassword())
+                .setPluginName("QTeamBot")
+                .setPort(config.databasePort())
+                .build();
 
-        CoreSource source = beetle.getFileProvider().getData(new LocalSourceKey("database")).produce();
-
+        CoreSource source = new HikariCoreSourceFactory(webConf,false).getCoreSource();
         DataCore dataCore = beetle.getDataCoreFactory().produceDatacore(source);
 
         beetle.getLogger().debug("Launcher | Initialized DataCore successfully! (?)");

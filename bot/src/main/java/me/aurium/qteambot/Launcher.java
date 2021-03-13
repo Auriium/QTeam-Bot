@@ -4,11 +4,11 @@ import me.aurium.beetle.api.Beetle;
 import me.aurium.beetle.api.datacore.CoreSource;
 import me.aurium.beetle.api.datacore.DataCore;
 import me.aurium.beetle.defaults.GenericBeetleFactory;
-import me.aurium.beetle.defaults.datacore.HikariCoreSourceFactory;
 import me.aurium.beetle.defaults.file.database.DBExtensionConstants;
 import me.aurium.beetle.defaults.file.database.LocalSourceKey;
 import me.aurium.beetle.defaults.file.database.LocalSourceOptions;
 import me.aurium.beetle.defaults.utility.LauncherUtils;
+import org.flywaydb.core.Flyway;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 
@@ -44,30 +44,23 @@ public class Launcher {
 
         beetle.getLogger().debug("Launcher | Initializing DataCore Functionality!");
 
-        DataCore dataCore;
+        beetle.getFileProvider().registerNewData(
+                new LocalSourceKey("database"),
+                new LocalSourceOptions("sa","",DBExtensionConstants.H2));
 
-        if (config.useLocalStorage()) {
-            switch (config.storageType()) {
-                case H2:
-                    beetle.getFileProvider().registerNewFileProducer(
-                            new LocalSourceKey("database"),
-                            new LocalSourceOptions("sa","", DBExtensionConstants.H2));
-                case SQLITE:
-                    /// FIXME: 3/12/21 add sqlite shit when im not tired
-                    beetle.getFileProvider().registerNewFileProducer(
-                            new LocalSourceKey("database"),
-                            new LocalSourceOptions("sa","", DBExtensionConstants.H2));
-            }
+        CoreSource source = beetle.getFileProvider().getData(new LocalSourceKey("database")).produce();
 
-            CoreSource coreSource = beetle.getFileProvider().getProducer(new LocalSourceKey("database")).produce();
-            dataCore = beetle.getDataCoreFactory().produceDatacore(coreSource);
-        } else {
-            CoreSource coreSource = new HikariCoreSourceFactory(config.webSourceConfig(), false).getCoreSource();
-
-            dataCore = beetle.getDataCoreFactory().produceDatacore(coreSource);
-        }
+        DataCore dataCore = beetle.getDataCoreFactory().produceDatacore(source);
 
         beetle.getLogger().debug("Launcher | Initialized DataCore successfully! (?)");
+
+        beetle.getLogger().debug("Launcher | Initializing Flyway!");
+
+        Flyway flyway = Flyway.configure(Launcher.class.getClassLoader())
+                .dataSource(source.getAdapter())
+                .locations("classpath:sql-schema")
+                .validateMigrationNaming(true).group(true)
+                .load();
 
         beetle.getLogger().debug("Launcher | Initializing SpecificLauncher");
 

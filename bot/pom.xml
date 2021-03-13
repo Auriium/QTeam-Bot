@@ -49,20 +49,20 @@
                     <finalName>${project.name}-${project.version}</finalName>
                     <relocations>
                         <relocation>
-                            <pattern>org.slf4j.slf4j-api</pattern>
-                            <shadedPattern>${project.groupId}.libs.slf4j.api</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.slf4j.slf4j-simple</pattern>
-                            <shadedPattern>${project.groupId}.libs.slf4j.simple</shadedPattern>
+                            <pattern>org.slf4j</pattern>
+                            <shadedPattern>${project.groupId}.libs.slf4j</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>me.aurium.beetle</pattern>
-                            <shadedPattern>${project.groupId}.libs.beetle.core</shadedPattern>
+                            <shadedPattern>${project.groupId}.libs.beetle</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.h2database.h2</pattern>
                             <shadedPattern>${project.groupId}.libs.h2</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.flywaydb.core</pattern>
+                            <shadedPattern>${project.groupId}.libs.flyway</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -71,6 +71,7 @@
     </build>
 
     <dependencies>
+        <!-- database !-->
         <dependency>
             <groupId>me.aurium</groupId>
             <artifactId>schema</artifactId>
@@ -87,9 +88,17 @@
             <version>${jooq.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>7.5.0</version>
+        </dependency>
+
+
+        <!-- beetle !-->
+        <dependency>
             <groupId>me.aurium</groupId>
             <artifactId>beetle-core-default</artifactId>
-            <version>0.3.2</version>
+            <version>0.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -101,6 +110,8 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.30</version>
         </dependency>
+
+        <!-- discord !-->
         <dependency>
             <groupId>org.javacord</groupId>
             <artifactId>javacord</artifactId>

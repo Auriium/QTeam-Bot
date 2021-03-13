@@ -8,8 +8,6 @@ public interface LauncherConfig {
     String token();
 
     //STORAGE
-    StorageType storageType();
     WebSourceConfig webSourceConfig();
-    boolean useLocalStorage();
 
 }

@@ -2,6 +2,7 @@ package me.aurium.qteambot;
 
 import me.aurium.beetle.api.Beetle;
 import me.aurium.beetle.api.datacore.DataCore;
+import org.flywaydb.core.Flyway;
 import org.javacord.api.DiscordApi;
 
 /**
@@ -22,6 +23,7 @@ public class QTeamBotLauncher {
     }
 
     public QTeamBot launch() {
+
 
 
 

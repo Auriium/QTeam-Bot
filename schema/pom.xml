@@ -19,18 +19,56 @@
 
         <flyway.version>7.5.0</flyway.version>
 
-        <db.name>qteam-bot</db.name>
-        <db.url>jdbc:h2:~/${db.name}</db.url>
-        <db.username>sa</db.username>
+        <db.name>sandbox</db.name>
         <db.port>50000</db.port>
+        <db.in>127.0.0.1</db.in>
+        <db.username>sandboxuser</db.username>
+        <db.password>sandboxpass</db.password>
 
-
+        <mariadb-connector.version>2.7.2</mariadb-connector.version>
 
 
     </properties>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>me.aurium</groupId>
+                <artifactId>tick-easy</artifactId>
+                <version>1.0.0</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mariadb.jdbc</groupId>
+                        <artifactId>mariadb-java-client</artifactId>
+                        <version>${mariadb-connector.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <databaseName>${db.name}</databaseName>
+                    <databasePassword>${db.password}</databasePassword>
+                    <databaseUsername>${db.username}</databaseUsername>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>startup</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>initialize-mariadb</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>teardown</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>teardown-containers</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
@@ -56,8 +94,9 @@
                 </executions>
 
                 <configuration>
-                    <url>${db.url}</url>
+                    <url>jdbc:tc:mariadb:////${db.name}?useSSL=false</url>
                     <user>${db.username}</user>
+                    <password>${db.password}</password>
 
                     <ignoreFutureMigrations>false</ignoreFutureMigrations>
                     <validateMigrationNaming>true</validateMigrationNaming>
@@ -67,6 +106,21 @@
                         <location>filesystem:src/main/resources/sql-schema</location>
                     </locations>
                 </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mariadb.jdbc</groupId>
+                        <artifactId>mariadb-java-client</artifactId>
+                        <version>${mariadb-connector.version}</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.testcontainers</groupId>
+                        <artifactId>testcontainers</artifactId>
+                        <version>1.15.2</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
 
@@ -86,32 +140,31 @@
 
                 <dependencies>
                     <dependency>
-                        <groupId>com.h2database</groupId>
-                        <artifactId>h2</artifactId>
-                        <version>${h2.version}</version>
+                        <groupId>org.mariadb.jdbc</groupId>
+                        <artifactId>mariadb-java-client</artifactId>
+                        <version>${mariadb-connector.version}</version>
+                        <scope>runtime</scope>
                     </dependency>
                 </dependencies>
 
                 <configuration>
                     <jdbc>
-                        <url>${db.url}</url>
+                        <url>jdbc:mariadb://${tick.host}:${tick.port}</url>
                         <user>${db.username}</user>
+                        <password>${db.password}</password>
+                        <driver>org.testcontainers.jdbc.ContainerDatabaseDriver</driver>
                     </jdbc>
                     <generator>
                         <database>
-                            <name>org.jooq.meta.h2.H2Database</name>
+                            <name>org.jooq.meta.mariadb.MariaDBDatabase</name>
                             <includes>.*</includes>
-
                             <includeTables>true</includeTables>
-
-                            <inputSchema>PUBLIC</inputSchema>
+                            <inputSchema>${db.name}</inputSchema>
 
                             <!-- IT TOOK FUCKING 3 HOURS TO FIGURE OUT THIS WAS CASE SENSITIVE. BITCH ASS SHITTY FUCK NIPPLE H2 FUCK YOU -->
 
                         </database>
                         <target>
-
-
                             <packageName>me.aurium.qteambot.sources</packageName>
                             <directory>target/generated-sources/</directory>
                         </target>
@@ -137,11 +190,13 @@
             <artifactId>jooq</artifactId>
             <version>${jooq.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.edugility</groupId>
-            <artifactId>h2-maven-plugin</artifactId>
-            <version>1.0</version>
-        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>repsy</id>
+            <url>https://repo.repsy.io/mvn/elytraforce/default</url>
+        </repository>
+    </repositories>
 
 </project>
